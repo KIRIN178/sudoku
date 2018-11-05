@@ -31,6 +31,8 @@ class MenuController extends Controller
 		if(is_null($id))
 			return response()->json(['status'=>'error']);
 		$cell_count = $request->get('cell_count');
+		if((int)$cell_count != 27 && (int)$cell_count != 30 && (int)$cell_count != 38 && (int)$cell_count != 48)
+			return response()->json(['status'=>'error']);
 		$puzzle = new Sudoku();
 		$puzzle->generatePuzzle((int)$cell_count);
 		$puz = json_encode($puzzle->getPuzzle());

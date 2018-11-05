@@ -1,0 +1,1 @@
+for /f %f IN ( 'app /b /s *.php *.htm *.html *.css *.js' ) DO @dos2unix %f

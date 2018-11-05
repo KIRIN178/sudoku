@@ -1,29 +1,32 @@
 <?php
-namespace App\Lib;
-class Sudoku {
-	protected $puzzle = array();
-	protected $solution = array();
 
-	public function getPuzzle()
-	{
-		return $this->puzzle;
-	}
-	public function setPuzzle(array $puzzle = array())
+namespace App\Lib;
+
+class Sudoku
+{
+    protected $puzzle = array();
+    protected $solution = array();
+
+    public function getPuzzle()
     {
-		$this->puzzle = $puzzle;
-		$this->setSolution($this->generateEmptyPuzzle());
-		return true;
+        return $this->puzzle;
     }
-	public function getSolution()
+    public function setPuzzle(array $puzzle = array())
+    {
+        $this->puzzle = $puzzle;
+        $this->setSolution($this->generateEmptyPuzzle());
+        return true;
+    }
+    public function getSolution()
     {
         return $this->solution;
     }
-	public function setSolution(array $solution)
+    public function setSolution(array $solution)
     {
-		$this->solution = $solution;
-		return true;
+        $this->solution = $solution;
+        return true;
     }
-	public function solve()
+    public function solve()
     {
         if ($this->isSolvable()) {
             $this->solution = $this->calculateSolution($this->puzzle);
@@ -32,7 +35,7 @@ class Sudoku {
             return false;
         }
     }
-	public function isSolved()
+    public function isSolved()
     {
         if (!$this->checkConstraints($this->solution)) {
             return false;
@@ -49,75 +52,70 @@ class Sudoku {
         }
         return true;
     }
-	public function isSolvable()
+    public function isSolvable()
     {
         return $this->checkConstraints($this->puzzle, true);
     }
-	public function generatePuzzle($cellCount)
+    public function generatePuzzle($cellCount)
     {
         if (!is_integer($cellCount) || $cellCount < 16 || $cellCount > 80) {
             return false;
         }
-		$this->puzzle = $this->calculateSolution($this->generateEmptyPuzzle());
-		$tempPuzzle = $this->puzzle;
-		$is_repeat = false;
-		do{
-			$cells = array_rand(range(0, 80), $cellCount);
-			$i = 0;
-			foreach ($this->puzzle as &$row) {
-				foreach ($row as &$cell) {
-					if (!in_array($i++, $cells)) {
-						$cell = 0;
-					}
-				}
-			}
-			foreach($this->puzzle as $x=>$rr) {
-				if($x % 3 == 0)
-					$hit = false;
-				$result = array_unique($rr);
-				if(count($result) == 1)
-				{
-					if($hit)
-					{
-						$is_repeat = true;
-						$this->puzzle = $tempPuzzle;
-						break;
-					}
-					else
-						$hit = true;
-				}
-			}
-			if(!$is_repeat)
-			{
-				$arr = $this->puzzle;
-				for($y=0;$y<9;$y++)
-				{
-					if($y % 3 == 0)
-						$hit = false;
-					$temp = array();
-					for($x=0;$x<9;$x++)
-					{
-						$temp[] = $arr[$x][$y];
-					}
-					$result = array_unique($temp);
-					if(count($result) == 1)
-					{
-						if($hit)
-						{
-							$is_repeat = true;
-							$this->puzzle = $tempPuzzle;
-							break;
-						}
-						else
-							$hit = true;
-					}
-				}
-			}
-		} while($is_repeat);
-		$this->setSolution($this->generateEmptyPuzzle());
+        $this->puzzle = $this->calculateSolution($this->generateEmptyPuzzle());
+        $tempPuzzle = $this->puzzle;
+        $is_repeat = false;
+        do {
+            $cells = array_rand(range(0, 80), $cellCount);
+            $i = 0;
+            foreach ($this->puzzle as &$row) {
+                foreach ($row as &$cell) {
+                    if (!in_array($i++, $cells)) {
+                        $cell = 0;
+                    }
+                }
+            }
+            foreach ($this->puzzle as $x => $rr) {
+                if ($x % 3 == 0) {
+                    $hit = false;
+                }
+                $result = array_unique($rr);
+                if (count($result) == 1) {
+                    if ($hit) {
+                        $is_repeat = true;
+                        $this->puzzle = $tempPuzzle;
+                        break;
+                    } else {
+                        $hit = true;
+                    }
+                }
+            }
+            if (!$is_repeat) {
+                $arr = $this->puzzle;
+                for ($y=0; $y<9; $y++) {
+                    if ($y % 3 == 0) {
+                        $hit = false;
+                    }
+                    $temp = array();
+                    for ($x=0; $x<9; $x++) {
+                        $temp[] = $arr[$x][$y];
+                    }
+                    $result = array_unique($temp);
+                    if (count($result) == 1) {
+                        if ($hit) {
+                            $is_repeat = true;
+                            $this->puzzle = $tempPuzzle;
+                            break;
+                        } else {
+                            $hit = true;
+                        }
+                    }
+                }
+            }
+        } while ($is_repeat);
+        $this->setSolution($this->generateEmptyPuzzle());
         return true;
     }
-	protected function checkConstraints(array $puzzle, $allowZeros = false)
+    protected function checkConstraints(array $puzzle, $allowZeros = false)
     {
         foreach ($puzzle as $x => $row) {
             if (!$this->checkContainerForViolations($row, $allowZeros)) {
@@ -160,11 +158,11 @@ class Sudoku {
         }
         return true;
     }
-	protected function generateEmptyPuzzle()
+    protected function generateEmptyPuzzle()
     {
         return array_fill(0, 9, array_fill(0, 9, 0));
     }
-	protected function calculateSolution(array $puzzle)
+    protected function calculateSolution(array $puzzle)
     {
         while (true) {
             $options = null;
@@ -202,7 +200,7 @@ class Sudoku {
             return false;
         }
     }
-	protected function getValidOptions(array $grid, $rowIndex, $columnIndex)
+    protected function getValidOptions(array $grid, $rowIndex, $columnIndex)
     {
         $invalid = $grid[$rowIndex];
         for ($i = 0; $i < 9; $i++) {
@@ -219,13 +217,18 @@ class Sudoku {
             $boxColumn = $columnIndex - $columnIndex % 3;
         }
         $invalid = array_unique(
-            array_merge($invalid, array_slice($grid[$boxRow], $boxColumn, 3), array_slice($grid[$boxRow + 1], $boxColumn, 3), array_slice($grid[$boxRow + 2], $boxColumn, 3))
+            array_merge(
+                $invalid,
+                array_slice($grid[$boxRow], $boxColumn, 3),
+                array_slice($grid[$boxRow + 1], $boxColumn, 3),
+                array_slice($grid[$boxRow + 2], $boxColumn, 3)
+            )
         );
         $valid = array_diff(range(1, 9), $invalid);
         shuffle($valid);
         return $valid;
     }
-	protected function checkContainerForViolations(array $container, $allowZeros = false)
+    protected function checkContainerForViolations(array $container, $allowZeros = false)
     {
         if (!$allowZeros && in_array(0, $container)) {
             return false;

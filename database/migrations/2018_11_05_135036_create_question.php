@@ -16,7 +16,7 @@ class CreateQuestion extends Migration
         Schema::create('question', function (Blueprint $table) {
             $table->increments('id');
 			$table->string('cookie_id', 64);
-			$table->integer('cell_count', 4);
+			$table->integer('cell_count');
 			$table->string('puzzle', 256);
             $table->timestamps();
         });
